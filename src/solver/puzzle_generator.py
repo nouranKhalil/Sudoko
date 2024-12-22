@@ -14,7 +14,7 @@ class PuzzleGenerator:
             raise ValueError("Invalid difficulty level")
         
         filled_cells = 0
-        print("Generating Sudoku puzzle with", noOfFilledCells)
+        # print("Generating Sudoku puzzle with", noOfFilledCells)
         while filled_cells < noOfFilledCells:
             row, col = random.randint(0, 8), random.randint(0, 8)
             if sudoku_grid[row][col] == 0:
