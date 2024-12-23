@@ -1,5 +1,9 @@
+import arc_consistency
 from csp import SudokuCSP
 from arc_consistency import ArcConsistency
+import numpy as np
+import copy
+
 
 class Backtracking:
     def __init__(self, csp: SudokuCSP):
@@ -8,12 +12,15 @@ class Backtracking:
     def backtrackingSearch(self):
         assignment = {}
         arc_consistency = ArcConsistency(self.csp)
+        old_domains = copy.deepcopy(self.csp.domains)
         if arc_consistency.ARC_3():
-            self.csp.domains = arc_consistency.csp.domains.copy()
+            # if self.csp.domains != old_domains:
+            #     print("Updated domains:")
+            #     self.csp.print_domains()
             return self.backtrack(assignment, arc_consistency)
         return None
 
-    def backtrack(self, assignment, arc_consistency):
+    def backtrack(self, assignment, arc_consistency: ArcConsistency):
         if len(assignment) == len(self.csp.variables):
             return assignment
 
@@ -21,13 +28,15 @@ class Backtracking:
         for value in self.orderDomainValues(variable):
             if self.csp.isConsistent(variable, value, assignment):
                 assignment[variable] = value
-                old_domains = self.csp.domains.copy()
+                old_domains = copy.deepcopy(self.csp.domains)
+                arc_consistency.csp.domains[variable] = {value}
                 if arc_consistency.ARC_3():
-                    self.csp.domains = arc_consistency.csp.domains.copy()
+                    # if self.csp.domains != old_domains:
+                    #     print("Updated domains:")
+                    #     self.csp.print_domains()
                     result = self.backtrack(assignment, arc_consistency)
                     if result is not None:
                         return result
-                self.csp.domains = old_domains.copy()
                 arc_consistency.csp.domains = old_domains.copy()
                 del assignment[variable]
         return None
@@ -75,25 +84,30 @@ def isSolvable_withUniqueSolution(sudoku_grid):
     return count, False
 
 
-# if __name__ == "__main__":
-#     sudoku_grid = [
-# [0, 0, 0, 0, 5, 1, 0, 0, 0],
-# [9, 0, 6, 0, 0, 0, 0, 0, 0],
-# [0, 0, 5, 0, 4, 0, 2, 0, 0],
-# [3, 0, 9, 1, 0, 0, 0, 0, 8],
-# [0, 0, 0, 0, 0, 5, 0, 0, 0],
-# [0, 1, 0, 7, 3, 0, 0, 9, 0],
-# [0, 0, 0, 0, 0, 0, 4, 0, 7],
-# [0, 3, 4, 2, 7, 0, 0, 0, 0],
-# [0, 0, 2, 0, 0, 0, 0, 0, 0]
-#     ]
+if __name__ == "__main__":
+    sudoku_grid = np.array(
+        [
+            [0, 0, 0, 0, 5, 1, 0, 0, 0],
+            [9, 0, 6, 0, 0, 0, 0, 0, 0],
+            [0, 0, 5, 0, 4, 0, 2, 0, 0],
+            [3, 0, 9, 1, 0, 0, 0, 0, 8],
+            [0, 0, 0, 0, 0, 5, 0, 0, 0],
+            [0, 1, 0, 7, 3, 0, 0, 9, 0],
+            [0, 0, 0, 0, 0, 0, 4, 0, 7],
+            [0, 3, 4, 2, 7, 0, 0, 0, 0],
+            [0, 0, 2, 0, 0, 0, 0, 0, 0],
+        ]
+    )
 
-#     print("does the puzzle have unique solution?", isSolvable_withUniqueSolution(sudoku_grid))
-#     sudoku_csp = SudokuCSP(sudoku_grid)
-#     solution = Backtracking(sudoku_csp).backtrackingSearch()
+    print(
+        "does the puzzle have unique solution?",
+        isSolvable_withUniqueSolution(sudoku_grid),
+    )
+    sudoku_csp = SudokuCSP(sudoku_grid)
+    solution = Backtracking(sudoku_csp).backtrackingSearch()
 
-#     if solution:
-#         for i in range(9):
-#             print([solution[(i, j)] for j in range(9)])
-#     else:
-#         print("No solution found.")
+    if solution:
+        for i in range(9):
+            print([solution[(i, j)] for j in range(9)])
+    else:
+        print("No solution found.")

@@ -1,6 +1,7 @@
 # Remember to change the grid to numpy array in all the project for optimaisation
+import numpy as np
 class SudokuCSP:
-    def __init__(self, sudoku_grid : list):
+    def __init__(self, sudoku_grid : np.ndarray):
         self.variables = [(i, j) for i in range(9) for j in range(9)]
         self.domains = {}
         self.update_domains(sudoku_grid)
@@ -48,12 +49,12 @@ class SudokuCSP:
                 and (
                     X1[0] == X2[0]
                     or X1[1] == X2[1]
-                    or (X1[0] // 3 == X2[0] // 3 and X1[1] // 3 == X2[1] // 3)
+                    or (((X1[0] // 3) == (X2[0] // 3)) and ((X1[1] // 3) == (X2[1] // 3)))
                 )
             )
         ]
 
-    def update_domains(self, sudoku_grid: list) -> None:
+    def update_domains(self, sudoku_grid: np.ndarray) -> None:
         """
         Update the domains of the variables based on the given Sudoku grid.
 
@@ -63,13 +64,12 @@ class SudokuCSP:
         self.domains = {
             variable: (
                 set(range(1, 10))
-                if sudoku_grid[variable[0]][variable[1]] == 0
-                else {sudoku_grid[variable[0]][variable[1]]}
+                if sudoku_grid[variable[0], variable[1]] == 0
+                else {sudoku_grid[variable[0], variable[1]]}
             )
             for variable in self.variables
         }
 
     def print_domains(self) -> None:
-        # print(self.domains)
-        for key, value in self.domains.items():
-            print(f"{key}: {value}")
+        for (x, y), domain_values in self.domains.items():
+            print(f"Variable ({x}, {y}) has domain: {domain_values}")

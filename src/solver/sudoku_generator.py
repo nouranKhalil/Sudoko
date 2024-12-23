@@ -73,9 +73,9 @@ class SudokuGenerator:
         if difficulty == "easy":
             clues_to_remove = 36
         elif difficulty == "medium":
-            clues_to_remove = 45
+            clues_to_remove = 42
         elif difficulty == "hard":
-            clues_to_remove = 53
+            clues_to_remove = 47
 
         while clues_to_remove > 0:
             row, col = random.randint(0, 8), random.randint(0, 8)
@@ -127,6 +127,6 @@ class SudokuGenerator:
             print(" ".join(str(board[row, col]) if board[row, col] != 0 else '.' for col in range(9)))
 
 
-difficulty = "easy"  
+difficulty = "hard"  
 puzzle = SudokuGenerator.generate_sudoku_puzzle(difficulty)
 SudokuGenerator.print_board(puzzle)
