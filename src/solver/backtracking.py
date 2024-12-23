@@ -4,7 +4,6 @@ from arc_consistency import ArcConsistency
 import numpy as np
 import copy
 
-
 class Backtracking:
     def __init__(self, csp: SudokuCSP):
         self.csp = csp
@@ -20,7 +19,7 @@ class Backtracking:
             return self.backtrack(assignment, arc_consistency)
         return None
 
-    def backtrack(self, assignment, arc_consistency: ArcConsistency):
+    def backtrack(self, assignment, arc_consistency : ArcConsistency):
         if len(assignment) == len(self.csp.variables):
             return assignment
 
