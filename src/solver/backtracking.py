@@ -38,15 +38,25 @@ class Backtracking:
                 arc_consistency.csp.domains = old_domains.copy()
                 del assignment[variable]
         return None
-
+# MRV 
     def selectUnassignedVariable(self, assignment):
         unassigned = [
             variable for variable in self.csp.variables if variable not in assignment
         ]
         return min(unassigned, key=lambda variable: len(self.csp.domains[variable]))
+# LCV
+    def orderDomainValues(self, variable, assignment):
+        def countConstraints(value):
+            count = 0
+            for neighbor in self.csp.constraints[variable]:
+                if neighbor not in assignment:
+                    count += sum(
+                        1 for neighbor_value in self.csp.domains[neighbor]
+                        if not self.csp.isConsistent(neighbor, neighbor_value, {**assignment, variable: value})
+                    )
+            return count
+        return sorted(self.csp.domains[variable], key=countConstraints)
 
-    def orderDomainValues(self, variable):
-        return self.csp.domains[variable]
 
 
 # to check input validation
