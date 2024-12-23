@@ -1,4 +1,3 @@
-# Remember to change the grid to numpy array in all the project for optimaisation
 import numpy as np
 class SudokuCSP:
     def __init__(self, sudoku_grid : np.ndarray):

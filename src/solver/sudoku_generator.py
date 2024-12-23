@@ -1,7 +1,7 @@
 import random
 import numpy as np
-from csp import SudokuCSP
-from backtracking import Backtracking
+from src.solver.csp import SudokuCSP
+from src.solver.backtracking import Backtracking
 
 class SudokuGenerator:
 
@@ -125,8 +125,3 @@ class SudokuGenerator:
     def print_board(board):
         for row in range(9):
             print(" ".join(str(board[row, col]) if board[row, col] != 0 else '.' for col in range(9)))
-
-
-difficulty = "hard"  
-puzzle = SudokuGenerator.generate_sudoku_puzzle(difficulty)
-SudokuGenerator.print_board(puzzle)

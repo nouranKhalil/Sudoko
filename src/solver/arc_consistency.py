@@ -1,7 +1,5 @@
-import time
-from csp import SudokuCSP
+from src.solver.csp import SudokuCSP
 from collections import deque
-import copy
 
 class ArcConsistency:
     def __init__(self, csp: SudokuCSP):

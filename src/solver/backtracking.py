@@ -1,6 +1,5 @@
-import arc_consistency
-from csp import SudokuCSP
-from arc_consistency import ArcConsistency
+from src.solver.csp import SudokuCSP
+from src.solver.arc_consistency import ArcConsistency
 import numpy as np
 import copy
 
