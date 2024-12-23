@@ -21,7 +21,7 @@ class Backtracking:
     def backtrack(self, assignment, arc_consistency : ArcConsistency):
         if len(assignment) == len(self.csp.variables):
             return assignment
-
+        
         variable = self.selectUnassignedVariable(assignment)
         for value in self.orderDomainValues(variable):
             if self.csp.isConsistent(variable, value, assignment):
@@ -38,18 +38,23 @@ class Backtracking:
                 arc_consistency.csp.domains = old_domains.copy()
                 del assignment[variable]
         return None
+
 # MRV 
     def selectUnassignedVariable(self, assignment):
+        # choose the variable with the fewest remaining values
         unassigned = [
             variable for variable in self.csp.variables if variable not in assignment
         ]
         return min(unassigned, key=lambda variable: len(self.csp.domains[variable]))
+
 # LCV
     def orderDomainValues(self, variable, assignment):
+        # count the number of constraints that would be violated by each value
         def countConstraints(value):
             count = 0
             for neighbor in self.csp.constraints[variable]:
                 if neighbor not in assignment:
+                    # count the number of values that would be invalid for the neighbor
                     count += sum(
                         1 for neighbor_value in self.csp.domains[neighbor]
                         if not self.csp.isConsistent(neighbor, neighbor_value, {**assignment, variable: value})
@@ -59,7 +64,7 @@ class Backtracking:
 
 
 
-# to check input validation
+# to validate input sudoku grid
 def isSolvable(sudoku_grid):
     csp = SudokuCSP(sudoku_grid)
     solver = Backtracking(csp)
@@ -85,7 +90,7 @@ def isSolvable_withUniqueSolution(sudoku_grid):
                     return count
                 del assignment[variable]
         return count
-
+    
     count = countSolutions({})
     if count == 1:
         return count, True
