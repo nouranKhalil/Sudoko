@@ -6,9 +6,7 @@ from PyQt5.QtWidgets import (
     QWidget, QLabel, QLineEdit
 )
 from PyQt5.QtGui import QFont, QIntValidator
-from PyQt5.QtCore import Qt, QEvent
-from matplotlib.pyplot import get
-from numpy import diff
+from PyQt5.QtCore import Qt, QEvent,QTimer
 from src.gui.board_helpers import get_input_limit
 from PyQt5.QtWidgets import QMessageBox
 from src.gui.utils import create_button, get_current_board, highlight_related_cells,handle_user_input,handle_user_input,handle_mouse_click,get_border_style
@@ -29,6 +27,7 @@ class SudokuApp(QMainWindow):
         self.ai = False
         self.correct_solution = None
         self.current_mode = None
+        self.time_label = None 
         self.main_menu()
 
 
@@ -163,6 +162,20 @@ class SudokuApp(QMainWindow):
         title.setAlignment(Qt.AlignCenter)
         title.setStyleSheet("color: #333333; margin-bottom: 20px;")
         layout.addWidget(title)
+        
+
+        # initialize qtimer for the clock
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.update_clock)
+        self.start_time = time.time()  # record start time
+        self.timer.start(1000)  # update every second
+
+        # initialize the time_label for showing time taken
+        self.time_label = QLabel("⏰ Time taken: 00.00 seconds")
+        self.time_label.setFont(QFont("Arial", 16))
+        self.time_label.setAlignment(Qt.AlignCenter)
+        self.time_label.setStyleSheet("color: #333333; margin-top: 10px;")
+        layout.addWidget(self.time_label)
 
         # sudoku grid
         self.grid = QGridLayout()
@@ -197,7 +210,7 @@ class SudokuApp(QMainWindow):
                 cell.setAlignment(Qt.AlignCenter)
                 cell.setFixedSize(50, 50)
                 cell.setValidator(QIntValidator(1, 9, self))
-                cell.is_correct = -1 
+                cell.is_correct = -1  # default to unfilled
 
                 border_style = get_border_style(row, col)
                 cell.setStyleSheet(f"""
@@ -214,10 +227,10 @@ class SudokuApp(QMainWindow):
                 if board[row][col] != 0:
                     cell.setText(str(board[row][col]))
                     cell.setReadOnly(True)
-                    cell.is_correct = 2 
+                    cell.is_correct = 2  # prefilled
                     cell.setStyleSheet(f"""
                         QLineEdit {{
-                            background-color: #E6E6FA;  /* Light pastel color */
+                            background-color: #E6E6FA; 
                             color: #333333;
                             {border_style}
                             border-radius: 0px;
@@ -264,6 +277,40 @@ class SudokuApp(QMainWindow):
         layout.addLayout(buttons_layout)
         self.central_widget.setLayout(layout)
 
+        if mode == 1:
+            self.start_ai_clock(board)
+        elif mode == 3:
+            self.start_user_clock()
+
+    def update_clock(self):
+        time_taken = time.time() - self.start_time
+        minutes, seconds = divmod(int(time_taken), 60)
+        self.time_label.setText(f"⏰ Time Taken: {minutes:02}:{seconds:02}")
+
+    def start_ai_clock(self, board):
+        self.start_time = time.time()  
+        csp = SudokuCSP(board)
+        solver = Backtracking(csp)
+        solution_dict = Backtracking.backtrackingSearch(solver)
+ 
+        if solution_dict:
+            self.correct_solution = [[0 for _ in range(9)] for _ in range(9)]
+            for (row, col), value in solution_dict.items():
+                self.correct_solution[row][col] = value
+            self.timer.stop()  
+
+    def start_user_clock(self):
+        """Start the clock for user in Mode 3."""
+        self.start_time = time.time() 
+        
+    def stop_clock(self):
+        """Stop the clock when the puzzle is completed."""
+        self.timer.stop()
+
+
+    def stop_clock(self):
+        """Stop the clock when the puzzle is completed."""
+        self.timer.stop()
 
     def validate_input(self, row, col):
         """Validate the user's input against the correct solution."""
@@ -294,8 +341,8 @@ class SudokuApp(QMainWindow):
 
         highlight_related_cells(self,row, col)
         if self.is_puzzle_complete():
-            self.show_completion_message()
-
+            self.stop_clock()  
+            self.show_completion_message() 
 
     def start_user_input_game(self, difficulty):
         self.current_mode=2
@@ -316,7 +363,12 @@ class SudokuApp(QMainWindow):
         self.remaining_label.setAlignment(Qt.AlignCenter)
         self.remaining_label.setStyleSheet("margin-bottom: 10px; color: #555555;")
         layout.addWidget(self.remaining_label)
-
+        # timer label
+        self.time_label = QLabel("⏰ Time taken: 0.00 seconds")
+        self.time_label.setFont(QFont("Arial", 16))
+        self.time_label.setAlignment(Qt.AlignCenter)
+        self.time_label.setStyleSheet("margin-top: 10px; color: #555555;")
+        layout.addWidget(self.time_label)
         grid_clear_layout = QHBoxLayout()
         grid_clear_layout.setAlignment(Qt.AlignCenter)
 
@@ -431,6 +483,10 @@ class SudokuApp(QMainWindow):
                     cell.setReadOnly(True)  
                     self.change_color(cell)
             self.show_completion_message()
+            
+            end_time = time.time()
+            time_taken = end_time - start_time
+            self.time_label.setText(f"⏰ Time taken: {time_taken:.2f} seconds")
         else:
             msg = QMessageBox()
             msg.setIcon(QMessageBox.Critical)
@@ -441,6 +497,7 @@ class SudokuApp(QMainWindow):
         time_taken = end_time - start_time
         print(f"Time taken to solve is {time_taken:f} seconds")
         self.ai = False
+
             
 
     def change_color(cell, color):
