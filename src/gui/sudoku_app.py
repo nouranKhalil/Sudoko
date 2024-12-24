@@ -16,7 +16,7 @@ from PyQt5.QtGui import QFont, QPixmap
 from src.solver.sudoku_generator import SudokuGenerator
 from src.solver.csp import SudokuCSP
 from src.solver.backtracking import Backtracking
-
+import time
 class SudokuApp(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -410,11 +410,10 @@ class SudokuApp(QMainWindow):
         print(self.current_mode)
         if self.current_mode == 2:
             self.ai = True
+        start_time = time.time()
         csp = SudokuCSP(board)
         solver = Backtracking(csp)
         solution_dict = Backtracking.backtrackingSearch(solver)
-        print(solution_dict)
-        print(type(solution_dict))
 
         if solution_dict:
             solution = [[0 for _ in range(9)] for _ in range(9)]
@@ -438,6 +437,9 @@ class SudokuApp(QMainWindow):
             msg.setText("The Sudoku puzzle is unsolvable. Please check the inputs.")
             msg.setWindowTitle("Unsolvable Puzzle")
             msg.exec_()
+        end_time = time.time()
+        time_taken = end_time - start_time
+        print(f"Time taken to solve is {time_taken:f} seconds")
         self.ai = False
             
 

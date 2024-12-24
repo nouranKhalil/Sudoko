@@ -12,9 +12,9 @@ class Backtracking:
         arc_consistency = ArcConsistency(self.csp)
         old_domains = copy.deepcopy(self.csp.domains)
         if arc_consistency.ARC_3():
-            # if self.csp.domains != old_domains:
-            #     print("Updated domains:")
-            #     self.csp.print_domains()
+            if self.csp.domains != old_domains:
+                print("Updated domains:")
+                self.csp.print_domains()
             return self.backtrack(assignment, arc_consistency)
         return None
 
@@ -29,9 +29,9 @@ class Backtracking:
                 old_domains = copy.deepcopy(self.csp.domains)
                 arc_consistency.csp.domains[variable] = {value}
                 if arc_consistency.ARC_3():
-                    # if self.csp.domains != old_domains:
-                    #     print("Updated domains:")
-                    #     self.csp.print_domains()
+                    if self.csp.domains != old_domains:
+                        print("Updated domains:")
+                        self.csp.print_domains()
                     result = self.backtrack(assignment, arc_consistency)
                     if result is not None:
                         return result

@@ -146,7 +146,6 @@ def highlight_related_cells(self, row, col):
             cell = self.cells[r][c]
             border_style = get_border_style(r, c)
             if cell.is_correct == -1:
-                print("ll")
                 style = default_cell_style_template.format(border_style=border_style)
             elif hasattr(cell, "is_correct") and cell.is_correct == 1:
                 style = correct_cell_style_template.format(border_style=border_style)
@@ -207,7 +206,6 @@ def highlight_related_cells(self, row, col):
                 if cell.is_correct == 0:
                     style = incorrect_cell_style_template.format(border_style=border_style)
                 if self.cells[r][c].text() == selected_value:
-                    print("d")
                     cell = self.cells[r][c]
                     border_style = get_border_style(r, c)
                     style = same_number_style_template.format(border_style=border_style)
