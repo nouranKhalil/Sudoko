@@ -251,6 +251,7 @@ def handle_user_input(self, row, col):
         board[row][col] = 0  
 
         if not is_valid_move(board, row, col, value):
+            self.remaining_cells -=1
             QMessageBox.warning(self, "Invalid Input", "This violates Sudoku rules!")
             self.cells[row][col].clear() 
         else:
