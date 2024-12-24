@@ -1,6 +1,9 @@
-from src.gui.gui import GUI
-from src.test.test_arc_consistency import TestSudokuSolver
+import sys
+from PyQt5.QtWidgets import QApplication
+from src.gui.sudoku_app import SudokuApp
 
-test = GUI()
-test.TestImport()
-test = TestSudokuSolver()
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    window = SudokuApp()
+    window.show()
+    sys.exit(app.exec_())

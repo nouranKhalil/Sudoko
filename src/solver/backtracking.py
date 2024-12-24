@@ -23,7 +23,7 @@ class Backtracking:
             return assignment
         
         variable = self.selectUnassignedVariable(assignment)
-        for value in self.orderDomainValues(variable):
+        for value in self.orderDomainValues(variable,assignment):
             if self.csp.isConsistent(variable, value, assignment):
                 assignment[variable] = value
                 old_domains = copy.deepcopy(self.csp.domains)
@@ -47,18 +47,19 @@ class Backtracking:
         ]
         return min(unassigned, key=lambda variable: len(self.csp.domains[variable]))
 
-# LCV
+    # LCV
     def orderDomainValues(self, variable, assignment):
         # count the number of constraints that would be violated by each value
         def countConstraints(value):
             count = 0
-            for neighbor in self.csp.constraints[variable]:
-                if neighbor not in assignment:
-                    # count the number of values that would be invalid for the neighbor
-                    count += sum(
-                        1 for neighbor_value in self.csp.domains[neighbor]
-                        if not self.csp.isConsistent(neighbor, neighbor_value, {**assignment, variable: value})
-                    )
+            if variable in self.csp.constraints:
+                for neighbor in self.csp.constraints[variable]:
+                    if neighbor not in assignment:
+                        # count the number of values that would be invalid for the neighbor
+                        count += sum(
+                            1 for neighbor_value in self.csp.domains[neighbor]
+                            if not self.csp.isConsistent(neighbor, neighbor_value, {**assignment, variable: value})
+                        )
             return count
         return sorted(self.csp.domains[variable], key=countConstraints)
 

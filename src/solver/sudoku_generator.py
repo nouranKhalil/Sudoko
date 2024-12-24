@@ -70,11 +70,11 @@ class SudokuGenerator:
         '''
         remove clues from the board based on the difficulty level
         '''
-        if difficulty == "easy":
+        if difficulty == "Easy":
             clues_to_remove = 36
-        elif difficulty == "medium":
+        elif difficulty == "Medium":
             clues_to_remove = 42
-        elif difficulty == "hard":
+        elif difficulty == "Hard":
             clues_to_remove = 47
 
         while clues_to_remove > 0:
