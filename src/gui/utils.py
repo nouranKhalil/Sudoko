@@ -95,8 +95,8 @@ def highlight_related_cells(self, row, col):
     """
     same_number_style_template = """
         QLineEdit {{
-            background-color: #3282bf;
-            border: 1px solid #3282bf;
+            background-color: #A5B9CC;
+            border: 1px solid #A5B9CC;
             border-radius: 0px;
             padding: 0px;
             {border_style}
