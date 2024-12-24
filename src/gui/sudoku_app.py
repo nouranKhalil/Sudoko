@@ -24,6 +24,7 @@ class SudokuApp(QMainWindow):
         self.setStyleSheet("background-color: #f0f4f7;")
         self.current_cell = (0, 0)
         self.remaining_cells = 0
+        self.timer = QTimer()
         self.ai = False
         self.correct_solution = None
         self.current_mode = None
@@ -98,6 +99,8 @@ class SudokuApp(QMainWindow):
 
 
     def select_difficulty(self, mode):
+        if mode == 3:
+            self.stop_clock()
         self.central_widget = QWidget()
         self.setCentralWidget(self.central_widget)
 
@@ -165,7 +168,6 @@ class SudokuApp(QMainWindow):
         
 
         # initialize qtimer for the clock
-        self.timer = QTimer(self)
         self.timer.timeout.connect(self.update_clock)
         self.start_time = time.time()  # record start time
         self.timer.start(1000)  # update every second
@@ -302,10 +304,6 @@ class SudokuApp(QMainWindow):
     def start_user_clock(self):
         """Start the clock for user in Mode 3."""
         self.start_time = time.time() 
-        
-    def stop_clock(self):
-        """Stop the clock when the puzzle is completed."""
-        self.timer.stop()
 
 
     def stop_clock(self):
