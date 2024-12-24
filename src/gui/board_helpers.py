@@ -17,4 +17,4 @@ def validate_user_board(self):
 
 
 def get_input_limit( difficulty):
-    return {"Easy": 45, "Medium": 39, "Hard": 5}[difficulty]
+    return {"Easy": 45, "Medium": 39, "Hard": 34}[difficulty]
